@@ -43,6 +43,22 @@ router.beforeEach(async(to, from, next) => {
           NProgress.done()
         }
       }
+
+      const roles = store.getters.roles
+      if (roles === '超管') {
+        store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
+          console.log('addrouters', store.getters.addRouters)
+          router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+          next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+        }).catch(() => {
+          store.dispatch('FedLogOut').then(() => {
+            Message.error('验证失败,请重新登录')
+            next({ path: '/login' })
+          })
+        })
+      } else {
+        next() // 当有用户权限的时候，说明所有可访问路由已生成 如访问没权限的全面会自动进入404页面
+      }
     }
   } else {
     /* has no token*/

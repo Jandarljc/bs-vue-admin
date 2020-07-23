@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="body">
-      <el-form ref="form" :model="form" class="ali-form clearfix">
+      <el-form ref="form" :model="form" class="ali-form clearfix" :rules="userForm">
         <el-form-item label="用户名">
           <el-input v-model="form.username" placeholder="请输入用户名" />
         </el-form-item>
@@ -44,14 +44,22 @@
 </template>
 
 <script>
-import { getInfo } from '@/api/user'
+import { getInfo, updateUserInfo } from '@/api/user'
 import store from '@/store'
 
 export default {
   data() {
+    const validatePassword = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('密码至少6位！'))
+      } else {
+        callback()
+      }
+    }
     return {
       token: store.getters.token,
       changePsw: false,
+      password: '',
       form: {
         avatar: '',
         id: '',
@@ -60,6 +68,10 @@ export default {
         password2: '',
         roles: '',
         username: ''
+      },
+      userForm: {
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        password2: [{ required: true, trigger: 'blur', validator: validatePassword }]
       }
     }
   },
@@ -70,11 +82,13 @@ export default {
       this.form.introduction = data.data.introduction
       this.form.roles = data.data.roles
       this.form.username = data.data.username
+      this.password = data.data.password
     })
   },
   methods: {
     handleAvatarSuccess(res, file) {
       this.form.avatar = URL.createObjectURL(file.raw)
+      console.log(file)
       console.log(this.form.avatar)
     },
     async beforeAvatarUpload(file) {
@@ -93,7 +107,40 @@ export default {
       this.fileList = []
     },
     save() {
-
+      try {
+        if (this.changePsw === false) {
+          console.log('不修改密码')
+          this.form.password = this.password
+          updateUserInfo(this.form).then((data) => {
+            this.$message({
+              message: data.data,
+              type: 'success'
+            })
+          })
+        } else if (this.changePsw === true) {
+          console.log('修改密码')
+          if (this.form.password === this.form.password2) {
+            this.password = this.form.password
+            this.form.password = this.password
+            updateUserInfo(this.form).then((data) => {
+              this.$message({
+                message: data.data,
+                type: 'success'
+              })
+            })
+          } else {
+            this.$message({
+              message: '两次密码不一致',
+              type: 'error'
+            })
+          }
+        }
+      } catch (error) {
+        this.$message({
+          message: error,
+          type: 'error'
+        })
+      }
     }
   }
 }

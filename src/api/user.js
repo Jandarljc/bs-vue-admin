@@ -68,3 +68,16 @@ export function uploadAvatar(file, token) {
     baseURL: process.env.VUE_APP_LOGIN_API
   })
 }
+
+/**
+ * 用户信息修改 接口
+ * @param {表单参数} data
+ */
+export function updateUserInfo(data) {
+  return request({
+    url: 'user/sendUpdateUserInfoData.json',
+    method: 'post',
+    data,
+    baseURL: process.env.VUE_APP_LOGIN_API
+  })
+}

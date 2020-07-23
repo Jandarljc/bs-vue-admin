@@ -75,115 +75,107 @@ export const constantRoutes = [
       path: '',
       name: 'order',
       component: () => import('@/views/order/index'),
-      meta: { title: '订单详情', icon: 'eye' }
+      meta: { title: '订单列表', icon: 'eye' }
     }]
   },
 
   {
-    path: '/example',
+    path: '/function',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
+    redirect: '',
+    children: [{
+      path: '',
+      name: 'function',
+      component: () => import('@/views/function/index'),
+      meta: { title: '菜单管理', icon: 'eye' }
+    }]
   },
 
   {
     path: '/nested',
     component: Layout,
     redirect: '/nested/menu1',
-    name: 'Nested',
+    name: '树形列表',
     meta: {
-      title: 'Nested',
+      title: '树形列表',
       icon: 'nested'
     },
     children: [
       {
         path: 'menu1',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
+        name: '菜单一',
+        meta: { title: '菜单一' },
         children: [
           {
             path: 'menu1-1',
             component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
+            name: '子菜单一',
+            meta: { title: '子菜单一' }
           },
           {
             path: 'menu1-2',
             component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
+            name: '子菜单二',
+            meta: { title: '子菜单二' },
             children: [
               {
                 path: 'menu1-2-1',
                 component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
+                name: '孙菜单一',
+                meta: { title: '孙菜单一' }
               },
               {
                 path: 'menu1-2-2',
                 component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
+                name: '孙菜单二',
+                meta: { title: '孙菜单二' }
               }
             ]
           },
           {
             path: 'menu1-3',
             component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
+            name: '子菜单三',
+            meta: { title: '子菜单三' }
           }
         ]
       },
       {
         path: 'menu2',
         component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        meta: { title: '菜单二' }
       }
     ]
   },
 
   // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+// 异步挂载的路由
+// 动态需要根据权限加载的路由表
+export const asyncRouterMap = [
+  {
+    path: '/order',
+    name: '权限测试',
+    meta: {
+      title: 'permission',
+      icon: 'el-icon-setting',
+      roles: ['admin']
+    },
+    component: resolve => require(['@/views/superOrder/index'], resolve),
+    children: [
+      {
+        name: '权限测试页',
+        path: '/order',
+        meta: {
+          title: 'permission', icon: 'el-icon-menu', roles: ['admin']
+        },
+        component: resolve => require(['@/views/superOrder/index'], resolve)
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 

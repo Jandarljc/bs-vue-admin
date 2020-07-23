@@ -18,7 +18,7 @@
           </router-link>
           <router-link to="/order">
             <el-dropdown-item>
-              订单详情
+              订单列表
             </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>

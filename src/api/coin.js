@@ -25,3 +25,27 @@ export function fetchPageCoinList(query) {
   })
 }
 
+/**
+ * 游戏币交易数据 删除接口
+ * @param {查询参数} data
+ */
+export function fetchDeleteData(id) {
+  return request({
+    url: '/coin/sendDeleteData.json/' + id,
+    method: 'get',
+    baseURL: process.env.VUE_APP_LOGIN_API
+  })
+}
+
+/**
+ * 游戏币交易数据 批量删除接口
+ * @param {查询参数} query
+ */
+export function fetchBatchDeleteData(data) {
+  return request({
+    url: '/coin/sendBatchDeleteData.json',
+    method: 'post',
+    data,
+    baseURL: process.env.VUE_APP_LOGIN_API
+  })
+}
